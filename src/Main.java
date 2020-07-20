@@ -1,6 +1,7 @@
 
 import com.sun.source.tree.IfTree;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Main {
@@ -72,6 +73,14 @@ public class Main {
         //for each product, calculate the 'triangle' then add as a line in the output file
         for (Product product : products) {
             outputList.add(product.calculateOutput(lowestOriginYear, highestDevelopmentYear));
+        }
+
+        //send each product triangle calculation to be written to a csv file
+        try{
+            CsvWriter.writeCsv(outputList,"outputFile.csv");
+        } catch (IOException e){
+            System.out.println("IOException found.");
+            e.printStackTrace();
         }
 
 
