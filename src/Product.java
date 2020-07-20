@@ -14,10 +14,6 @@ public class Product {
         return this.productName;
     }
 
-    public List<Map<String, String>> getProductRows() {
-        return productRows;
-    }
-
     public void addProductRow(Map<String, String> productRow) {
         productRows.add(productRow);
     }

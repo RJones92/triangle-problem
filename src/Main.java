@@ -6,10 +6,13 @@ import java.util.*;
 
 public class Main {
 
+    static final String INPUT_FILEPATH = "testfiles/testIn.csv";
+    static final String OUTPUT_FILEPATH = "outputFile.csv";
+
     public static void main(String[] args) {
 
         //Read in the .csv file
-        List<Map<String, String>> rowsOfData = CsvReader.readCsv("TestIn.csv");
+        List<Map<String, String>> rowsOfData = CsvReader.readCsv(INPUT_FILEPATH);
 
         //find the lowest origin year and range of years, for the first line of the output.
         int lowestOriginYear = 0;
@@ -31,19 +34,12 @@ public class Main {
                 highestDevelopmentYear = developmentYear;
             }
 
-            //Create a new Product object for each product available
+            //Create a new Product object for each new product
             String productName = row.get("product");
             if (products.isEmpty()) {
                 products.add(new Product(productName));
             } else {
-                boolean productAlreadyExits = false;
-                for (int i = 0; i < products.size(); i++) {
-                    if (products.get(i).getProductName().equals(productName)) {
-                        productAlreadyExits = true;
-                        break;
-                    }
-                }
-                if (!productAlreadyExits) {
+                if (!productExists(productName, products)) {
                     products.add(new Product(productName));
                 }
             }
@@ -59,7 +55,7 @@ public class Main {
         }
 
 
-        //Store data for csv output file
+        //Data store for csv output file
         List<List<String>> outputList = new LinkedList<>();
 
         //first line of the output file
@@ -77,14 +73,24 @@ public class Main {
 
         //send each product triangle calculation to be written to a csv file
         try{
-            CsvWriter.writeCsv(outputList,"outputFile.csv");
+            CsvWriter.writeCsv(outputList,OUTPUT_FILEPATH);
         } catch (IOException e){
             System.out.println("IOException found.");
             e.printStackTrace();
         }
 
+    }
 
 
+    private static boolean productExists(String productName, List<Product> products){
+        boolean productAlreadyExits = false;
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).getProductName().equals(productName)) {
+                productAlreadyExits = true;
+                break;
+            }
+        }
+        return productAlreadyExits;
     }
 
 }
