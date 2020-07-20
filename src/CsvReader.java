@@ -1,34 +1,50 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CsvReader {
 
-    public static List<List<String>> readCsv(String filename){
+    public static List<Map<String, String>> readCsv(String filename){
+        //Each List<String> will be a row of data
+        List<List<String>> rowsFromCsv = new ArrayList<>();
+        
+        try (BufferedReader incrementalClaimsData = (new BufferedReader(new FileReader(filename)))) {
 
-        //Each inner-list will be a row of data
-        List<List<String>> rows = new ArrayList<>();
+            //first row are headers. IGNORE THE FIRST ROW
+            incrementalClaimsData.readLine();
 
-        try (BufferedReader incrementalClaimsData = (new BufferedReader(new FileReader("testIn.csv")))) {
-
-            //first row are headers. IGNORE THE FIRST ROW, NOTHING WE HAVE TO WITH IT
-            String firstRow = incrementalClaimsData.readLine();
-//            String[] headers = firstRow.split(", ");
-
-            //all rows of data
             String dataRow;
             while ((dataRow = incrementalClaimsData.readLine()) != null) {
                 String[] values = dataRow.split(", ");
-                rows.add(Arrays.asList(values));
+                rowsFromCsv.add(Arrays.asList(values));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+        return mapValuesForEachRow(rowsFromCsv);
+    }
+    
+    private static List<Map<String, String>> mapValuesForEachRow(List<List<String>> list){
 
-        return rows;
+        List<Map<String, String>> data = new ArrayList<>();
+
+        for (List row : list) {
+            Map<String, String> rowMap = new HashMap<>();
+
+            String product = row.get(0).toString();
+            String originYear = row.get(1).toString();
+            String developmentYear = row.get(2).toString();
+            String incrementalValue = row.get(3).toString();
+
+            rowMap.put("product", product);
+            rowMap.put("originYear", originYear);
+            rowMap.put("developmentYear", developmentYear);
+            rowMap.put("incrementalValue", incrementalValue);
+            data.add(rowMap);
+        }
+        return data;
     }
 
 }
