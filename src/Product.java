@@ -28,36 +28,41 @@ public class Product {
         double accumulatedValue = 0;
 
         //loop through possible originYear's
-        for (int originYear = startingYear; originYear < (lastYear + 1); originYear++) {
-            Map<String, String> productRow = productRows.get(rowCounter);
-            int originYearForRow = Integer.parseInt(productRow.get("originYear"));
-            int developmentYearForRow = Integer.parseInt(productRow.get("developmentYear"));
+        try {
+            for (int originYear = startingYear; originYear < (lastYear + 1); originYear++) {
+                Map<String, String> productRow = productRows.get(rowCounter);
+                int originYearForRow = Integer.parseInt(productRow.get("originYear"));
+                int developmentYearForRow = Integer.parseInt(productRow.get("developmentYear"));
 
-            //loop through possible developmentYears
-            for (int developmentYear = originYear; developmentYear < (lastYear + 1); developmentYear++) {
+                //loop through possible developmentYears
+                for (int developmentYear = originYear; developmentYear < (lastYear + 1); developmentYear++) {
 
-                //if originYear & developmentYear match, accumulate then move onto next row of data
-                if ((originYearForRow == originYear) && (developmentYearForRow == developmentYear)) {
-                    accumulatedValue += Double.parseDouble(productRow.get("incrementalValue"));
+                    //if originYear & developmentYear match, accumulate then move onto next row of data
+                    if ((originYearForRow == originYear) && (developmentYearForRow == developmentYear)) {
+                        accumulatedValue += Double.parseDouble(productRow.get("incrementalValue"));
 
-                    //match found so look at next row
-                    rowCounter++;
-                    if (rowCounter < productRows.size()) {
-                        productRow = productRows.get(rowCounter);
-                        originYearForRow = Integer.parseInt(productRow.get("originYear"));
-                        developmentYearForRow = Integer.parseInt(productRow.get("developmentYear"));
+                        //match found so look at next row
+                        rowCounter++;
+                        if (rowCounter < productRows.size()) {
+                            productRow = productRows.get(rowCounter);
+                            originYearForRow = Integer.parseInt(productRow.get("originYear"));
+                            developmentYearForRow = Integer.parseInt(productRow.get("developmentYear"));
+                        }
+
                     }
+                    //for every developmentYear, even if there's no value, add the accValue
+                    outputRow.add(Double.toString(accumulatedValue));
 
                 }
-                //for every developmentYear, even if there's no value, add the accValue
-                outputRow.add(Double.toString(accumulatedValue));
+                //once we've finished with an originYear, reset the accumulated value
+                accumulatedValue = 0;
 
             }
-            //once we've finished with an originYear, reset the accumulated value
-            accumulatedValue = 0;
-
+        } catch (IndexOutOfBoundsException e){
+            System.out.println("IndexOutOfBoundsException found.");
+            System.out.println(e.getMessage());
         }
-        System.out.println(outputRow);
+//        System.out.println(outputRow);
         return outputRow;
     }
 
